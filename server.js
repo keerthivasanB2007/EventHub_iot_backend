@@ -4,19 +4,19 @@ const cors = require('cors');
 const dotenv = require('dotenv');
 const path = require('path');
 
-// 🔥 Force dotenv to load from backend folder
 dotenv.config();
-
-
 
 const eventRoutes = require('./routes/eventRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 
 const app = express();
 
-// Middleware
+// ✅ FIXED CORS CONFIG
 app.use(cors({
-  origin: process.env.CLIENT_URL || 'http://localhost:5173',
+  origin: [
+    "http://localhost:5173",
+    "https://event-hub-iot-frontend-git-main-keerthivasanb2007s-projects.vercel.app"
+  ],
   credentials: true
 }));
 
@@ -46,7 +46,7 @@ app.use((err, req, res, next) => {
   });
 });
 
-// 🔥 Database connection
+// Database connection
 mongoose.connect(process.env.MONGO_URI)
   .then(() => {
     console.log('✅ MongoDB connected successfully');
