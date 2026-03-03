@@ -22,7 +22,6 @@ async function main() {
     return;
   }
 
-  // NOTE: Admin model hashes the password in a pre-save hook.
   await Admin.create({
     username: USERNAME,
     email: EMAIL,

@@ -11,13 +11,13 @@ const adminRoutes = require('./routes/adminRoutes');
 
 const app = express();
 
-// ✅ Since frontend & backend are SAME DOMAIN now
+// Middleware
 app.use(cors());
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// ─── API Routes ───────────────────────────────────────────
+// Routes
 app.use('/api/events', eventRoutes);
 app.use('/api/admin', adminRoutes);
 
@@ -26,14 +26,19 @@ app.get('/api/health', (req, res) => {
   res.json({ success: true, message: 'Server is running' });
 });
 
-// ─── Serve React Frontend (dist folder) ───────────────────
+// Serve React Frontend (dist folder)
 app.use(express.static(path.join(__dirname, 'dist')));
 
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'dist', 'index.html'));
 });
 
-// ─── Global error handler ─────────────────────────────────
+// 404 handler
+app.use((req, res) => {
+  res.status(404).json({ success: false, message: 'Route not found' });
+});
+
+// Global error handler
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(err.status || 500).json({
@@ -42,7 +47,7 @@ app.use((err, req, res, next) => {
   });
 });
 
-// ─── Database connection ──────────────────────────────────
+// 🔥 Database connection
 mongoose.connect(process.env.MONGO_URI)
   .then(() => {
     console.log('✅ MongoDB connected successfully');
