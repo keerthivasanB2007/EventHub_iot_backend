@@ -11,20 +11,13 @@ const adminRoutes = require('./routes/adminRoutes');
 
 const app = express();
 
-// ✅ FIXED CORS CONFIG
-app.use(cors({
-  origin: [
-    "http://localhost:5173",
-    "https://event-hub-iot-frontend.vercel.app",
-    "https://event-hub-iot-frontend-git-main-keerthivasanb2007s-projects.vercel.app"
-  ],
-  credentials: true
-}));
+// ✅ Since frontend & backend are SAME DOMAIN now
+app.use(cors());
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Routes
+// ─── API Routes ───────────────────────────────────────────
 app.use('/api/events', eventRoutes);
 app.use('/api/admin', adminRoutes);
 
@@ -33,12 +26,14 @@ app.get('/api/health', (req, res) => {
   res.json({ success: true, message: 'Server is running' });
 });
 
-// 404 handler
-app.use((req, res) => {
-  res.status(404).json({ success: false, message: 'Route not found' });
+// ─── Serve React Frontend (dist folder) ───────────────────
+app.use(express.static(path.join(__dirname, 'dist')));
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
 });
 
-// Global error handler
+// ─── Global error handler ─────────────────────────────────
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(err.status || 500).json({
@@ -47,7 +42,7 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Database connection
+// ─── Database connection ──────────────────────────────────
 mongoose.connect(process.env.MONGO_URI)
   .then(() => {
     console.log('✅ MongoDB connected successfully');
