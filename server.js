@@ -15,6 +15,7 @@ const app = express();
 app.use(cors({
   origin: [
     "http://localhost:5173",
+    "https://event-hub-iot-frontend.vercel.app",
     "https://event-hub-iot-frontend-git-main-keerthivasanb2007s-projects.vercel.app"
   ],
   credentials: true
