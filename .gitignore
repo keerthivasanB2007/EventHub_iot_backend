@@ -21,10 +21,7 @@ pids
 coverage/
 .nyc_output/
 
-# build output
-.dist/
-dist/
-build/
+
 
 # OS / editor
 .DS_Store
